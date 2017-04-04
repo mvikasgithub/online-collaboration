@@ -8,10 +8,11 @@ public interface UserDAO
 {
 	User_Detail get(int id);
 	List<User_Detail> list();
-	User_Detail getUserBuUsername(String username); // username will be email id
+	User_Detail getUserByEmail(String email); // username will be email id
 	
 	//Methods for JUnit
 	String add(User_Detail user);
 	String update(User_Detail user);
 	boolean delete(int id);	
+	int getLastIndertedID();
 }

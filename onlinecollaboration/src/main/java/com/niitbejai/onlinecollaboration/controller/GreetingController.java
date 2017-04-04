@@ -13,6 +13,7 @@ public class GreetingController
 	@RequestMapping(value="/greeting")
 	public ResponseEntity<DomainResponse> greeting()
 	{
+		System.out.println("Inside /greeting");
 		return new ResponseEntity<DomainResponse>(new DomainResponse("Welcome from Spring RestController", 200), HttpStatus.OK);
 	}
 

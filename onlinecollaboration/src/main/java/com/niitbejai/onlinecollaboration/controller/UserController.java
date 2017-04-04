@@ -38,12 +38,62 @@ public class UserController {
 	}	
 	
 	@PostMapping("/receive")
+	public ResponseEntity<DomainResponse> post_userlogin(@RequestBody User_Detail user) {
+		
+		user.setActive(true);
+		System.out.println(user);
+		
+		User_Detail duplicateUser = userDAO.getUserByEmail(user.getEmail());
+		
+		System.out.println("Duplicate user = " + duplicateUser);
+		
+		
+		if( duplicateUser == null)
+		{
+			int nextId = userDAO.getLastIndertedID() + 1;
+			user.setUserid(nextId);
+			user.setAuthenticated(false);
+			userDAO.add(user);
+			System.out.println("User Added to Database successfully");
+			return new ResponseEntity<DomainResponse> (new DomainResponse("User Added to DB",200), HttpStatus.OK);
+		}
+		else
+		{
+			System.out.println("Duplicate Email, so not adding to database");
+			return new ResponseEntity<DomainResponse> (new DomainResponse("Duplicate Email",500), HttpStatus.CONFLICT);
+		}
+	}
+	
+	@PostMapping("/login")
 	public ResponseEntity<DomainResponse> post(@RequestBody User_Detail user) {
 		
 		System.out.println(user);
 		
+		User_Detail existingUser = userDAO.getUserByEmail(user.getEmail());
 		
-		return new ResponseEntity<DomainResponse> (new DomainResponse("User receieved",200), HttpStatus.OK);
-	}
+		System.out.println("Existing user = " + existingUser);
+		
+		
+		if( existingUser == null)
+		{
+			//means there is no user with that mail id, return appropriate error message
+			System.out.println("Unknown user. Username does not exist");
+			return new ResponseEntity<DomainResponse> (new DomainResponse("Username does not exist",500), HttpStatus.BAD_REQUEST);
+		}
+		else
+		{
+			// user exists, now cross check the password
+			if(existingUser.getPassword().equals(user.getPassword()))
+			{
+				System.out.println("Password matches. User Authenticated.");
+				return new ResponseEntity<DomainResponse> (new DomainResponse("User Authenticated",200), HttpStatus.OK);
+			}
+			else
+			{
+				System.out.println("Wrong password, try again");
+				return new ResponseEntity<DomainResponse> (new DomainResponse("Wrong Password. Try Again !",501), HttpStatus.BAD_REQUEST);
+			}
+		}
+	}	
 	
 }

@@ -45,7 +45,7 @@ public class User_Detail implements Serializable
 	@NotEmpty
 	private String role;
 	private boolean active = true;
-	
+	private boolean authenticated = true;
 	/*
 	 * Getters and Setters
 	 */
@@ -126,13 +126,20 @@ public class User_Detail implements Serializable
 	public void setAddress(String address) {
 		Address = address;
 	}
+
+	public boolean isAuthenticated() {
+		return authenticated;
+	}
+	public void setAuthenticated(boolean authenticated) {
+		this.authenticated = authenticated;
+	}
+	
 	@Override
 	public String toString() {
 		return "User_Detail [userid=" + userid + ", password=" + password + ", fname=" + fname + ", sname=" + sname
 				+ ", email=" + email + ", Address=" + Address + ", city=" + city + ", state=" + state + ", zip=" + zip
-				+ ", phoneno=" + phoneno + ", role=" + role + ", active=" + active + "]";
+				+ ", phoneno=" + phoneno + ", role=" + role + ", active=" + active + ", authenticated=" + authenticated
+				+ "]";
 	}
-	
-	
 	
 }

@@ -1,5 +1,6 @@
 package com.niitbejai.onlinecollaboration.daoimpl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
@@ -8,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import com.niitbejai.onlinecollaboration.dao.UserDAO;
 import com.niitbejai.onlinecollaboration.dto.User_Detail;
 
+
+/* sequence for userid is USER_DETAIL_USERID_SEQ */
 @Repository("userDAO")
 @Transactional
 public class UserDAOImpl implements UserDAO 
@@ -61,11 +65,26 @@ public class UserDAOImpl implements UserDAO
 		return query.getResultList();		
 	}
 
+
 	@Override
-	public User_Detail getUserBuUsername(String username) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public User_Detail getUserByEmail(String email) 
+	{
+		
+		String selectActiveCategory = "FROM User_Detail WHERE email = :parameter";
+		
+		Query<User_Detail> query = sessionFactory.getCurrentSession().createQuery(selectActiveCategory, User_Detail.class);
+		
+		query.setParameter("parameter", email);
+		
+		try
+		{
+			return query.getSingleResult();
+		}
+		catch(Exception ex)
+		{
+			return null;
+		}		
+	}	
 
 	@Override
 	public String add(User_Detail user) 
@@ -97,6 +116,14 @@ public class UserDAOImpl implements UserDAO
 			ex.printStackTrace();
 			return "false";
 		}		
+	}
+
+	@Override
+	public int getLastIndertedID() {
+		BigDecimal lastBIseqid = (BigDecimal) sessionFactory.getCurrentSession().createSQLQuery("select USER_DETAIL_USERID_SEQ.nextval from dual").uniqueResult();
+		System.out.println("NextVal = " + lastBIseqid.toString());
+		Integer lastId = lastBIseqid.intValue();
+		return lastId.intValue();
 	}
 
 }

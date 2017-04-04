@@ -1,6 +1,8 @@
-var app = angular.module("CollaborationApp",
-    [
-        'ngRoute',
-        'BasicModule'
-    ]
-);
+'use strict';
+
+// Define the `phonecatApp` module
+angular.module('ellianzFE', [
+  'ngRoute',
+  'basicConnection'
+
+]);
