@@ -65,7 +65,7 @@ public class UserController {
 	}
 	
 	@PostMapping("/login")
-	public ResponseEntity<DomainResponse> post(@RequestBody User_Detail user) {
+	public ResponseEntity<User_Detail> post(@RequestBody User_Detail user) {
 		
 		System.out.println(user);
 		
@@ -78,20 +78,36 @@ public class UserController {
 		{
 			//means there is no user with that mail id, return appropriate error message
 			System.out.println("Unknown user. Username does not exist");
-			return new ResponseEntity<DomainResponse> (new DomainResponse("Username does not exist",500), HttpStatus.BAD_REQUEST);
+			User_Detail erroruser = new User_Detail();
+			erroruser.setFname("Username does not exist"); // piggy-backing on fname rather than creating a separate error string
+			return new ResponseEntity<User_Detail> (erroruser, HttpStatus.BAD_REQUEST);
 		}
 		else
 		{
 			// user exists, now cross check the password
 			if(existingUser.getPassword().equals(user.getPassword()))
 			{
-				System.out.println("Password matches. User Authenticated.");
-				return new ResponseEntity<DomainResponse> (new DomainResponse("User Authenticated",200), HttpStatus.OK);
+				System.out.println("Password matches. ");
+				
+				if(existingUser.isAuthenticated())
+				{
+					System.out.println("User successfully authenticated");
+					return new ResponseEntity<User_Detail> (existingUser, HttpStatus.OK);
+				}
+				else
+				{
+					System.out.println("User not authenticated by Admin.");
+					User_Detail erroruser = new User_Detail();
+					erroruser.setFname("User Not Authenticated By Admin"); // piggy-backing on fname rather than creating a separate error string
+					return new ResponseEntity<User_Detail> (erroruser, HttpStatus.BAD_REQUEST);					
+				}
 			}
 			else
 			{
 				System.out.println("Wrong password, try again");
-				return new ResponseEntity<DomainResponse> (new DomainResponse("Wrong Password. Try Again !",501), HttpStatus.BAD_REQUEST);
+				User_Detail erroruser = new User_Detail();
+				erroruser.setFname("Wrong Password. Try Again !"); // piggy-backing on fname rather than creating a separate error string
+				return new ResponseEntity<User_Detail> (erroruser, HttpStatus.BAD_REQUEST);					
 			}
 		}
 	}	

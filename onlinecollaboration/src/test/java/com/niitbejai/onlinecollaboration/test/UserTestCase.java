@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import com.niitbejai.onlinecollaboration.dao.FriendListDAO;
 import com.niitbejai.onlinecollaboration.dao.UserDAO;
 import com.niitbejai.onlinecollaboration.dto.User_Detail;
 
@@ -16,6 +17,7 @@ public class UserTestCase
 	
 	private static UserDAO userDAO;
 	private User_Detail user;
+	private static FriendListDAO friendListDAO;
 	
 	@BeforeClass
 	public static void init()
@@ -25,6 +27,7 @@ public class UserTestCase
 		context.refresh();
 		
 		userDAO = (UserDAO) context.getBean("userDAO");
+		friendListDAO = (FriendListDAO) context.getBean("friendListDAO");
 		  
 	}	
 	
@@ -73,11 +76,20 @@ public class UserTestCase
 		assertEquals("Successfully fetched a single category from the table !", true, userDAO.delete(2));
 	}
 */
-	
+/*	
 	@Test
 	public void testgetUser()
 	{
 		
 		assertEquals("Successfully fetched a single category from the table !", "Sachin", userDAO.get(1).getFname());
-	}	
+	}
+	*/
+	
+	@Test
+	public void testAddFriend()
+	{
+		assertEquals("Successfully added Friend !", true, friendListDAO.addfriend(2, 3));
+	}
+	
+	
 }
