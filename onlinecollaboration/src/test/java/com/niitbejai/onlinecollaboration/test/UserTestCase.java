@@ -85,11 +85,6 @@ public class UserTestCase
 	}
 	*/
 	
-	@Test
-	public void testAddFriend()
-	{
-		assertEquals("Successfully added Friend !", true, friendListDAO.addfriend(2, 3));
-	}
-	
+
 	
 }

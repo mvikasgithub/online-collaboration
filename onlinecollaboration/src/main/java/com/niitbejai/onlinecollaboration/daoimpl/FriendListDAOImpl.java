@@ -30,57 +30,61 @@ public class FriendListDAOImpl implements FriendListDAO
 	}
 
 	@Override
-	public boolean updateFriendStatus(int userid, int friendid, String Status) 
+	public boolean updateFriendStatus(int userid, int friendid, String status) 
 	{
 
 		Friend_List friend = new Friend_List();
 		
 		friend.setUserid(userid);
 		friend.setFriendid(friendid);
-		friend.setStatus("ACCEPTED");
-		update(friend);
+		friend.setStatus(status);
+		if(!update(friend))
+			return false;
 		
 		
 		// Also add add "userid" as a friend of "friendid" (if "a" is frined of "b" then "b" is friend of "a")
-		friend.setFriendid(userid);
-		friend.setUserid(friendid);
-		friend.setStatus("ACCEPTED");
-		add(friend);
+		Friend_List refriend = new Friend_List();
+		refriend.setFriendid(userid);
+		refriend.setUserid(friendid);
+		refriend.setStatus(status);
 		
-		return false;
+		if(!add(refriend))
+			return false;
+		
+		return true;
 	}
 	
 
 	
 	@Override
-	public String update(Friend_List friend) 
+	public boolean update(Friend_List friend) 
 	{
 		try
 		{
 			// update this category in the database
 			sessionFactory.getCurrentSession().update(friend);
-			return "true";	
+			return true;	
 		}
 		catch(Exception ex)
 		{
 			ex.printStackTrace();
-			return "false";
+			return false;
 		}		
 	}
 
 	@Override
-	public String add(Friend_List friend) 
+	public boolean add(Friend_List friend) 
 	{
 		try
 		{
 			// persist this category in the database
 			sessionFactory.getCurrentSession().persist(friend);
-			return "true";	
+			return true;	
 		}
 		catch(Exception ex)
 		{
 			ex.printStackTrace();
-			return "false";
+			return false;
 		}	
 
 	}
@@ -119,7 +123,7 @@ public class FriendListDAOImpl implements FriendListDAO
 		friend.setFriendid(friendid);
 		friend.setStatus("ADDED");
 		
-		return delete(friend);
+		return add(friend);
 	}
 	
 	
