@@ -17,15 +17,18 @@ public class Friend_List implements Serializable
 	 */
 	private static final long serialVersionUID = -2044823641396302924L;
 	@Id
+	private int friendlistid;
+
 	private int userid;
 	private int friendid;
 	private String status;
 	
-	
 	@Override
 	public String toString() {
-		return "Friend_List [userid=" + userid + ", friendid=" + friendid + ", status=" + status + "]";
+		return "Friend_List [friendlistid=" + friendlistid + ", userid=" + userid + ", friendid=" + friendid
+				+ ", status=" + status + "]";
 	}
+	
 	
 	public int getUserid() {
 		return userid;
@@ -48,7 +51,13 @@ public class Friend_List implements Serializable
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+	public int getFriendlistid() {
+		return friendlistid;
+	}
 
+	public void setFriendlistid(int friendlistid) {
+		this.friendlistid = friendlistid;
+	}
 	
 	
 	

@@ -1,5 +1,6 @@
 package com.niitbejai.onlinecollaboration.controller;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.niitbejai.onlinecollaboration.dao.FriendListDAO;
 import com.niitbejai.onlinecollaboration.dao.UserDAO;
 import com.niitbejai.onlinecollaboration.dto.User_Detail;
 import com.niitbejai.onlinecollaboration.model.DomainResponse;
@@ -22,6 +24,9 @@ public class UserController {
 	
 	@Autowired
 	private UserDAO userDAO;
+	
+	@Autowired
+	private FriendListDAO friendlistDAO;	
 	
 	@RequestMapping(value = "/{id}")
 	public ResponseEntity<User_Detail> get(@PathVariable int id) {
@@ -35,7 +40,76 @@ public class UserController {
 		
 		return new ResponseEntity<List<User_Detail>>(userDAO.list(), HttpStatus.OK);
 		
+	}
+	
+	@RequestMapping(value = "/allbutme")
+	public ResponseEntity<List<User_Detail>> getallusersexceptme(@RequestBody User_Detail user) 
+	{
+		// get all users in the database
+		List<User_Detail> allusers = userDAO.list();
+		
+		// get all the friends of the current user 
+		List<Long> allfriends =  friendlistDAO.getAllFriendsId(user.getUserid());
+		
+		// get accept pending for this user (initiator) and show the same as "Added (Accept Pending)"
+		List<Long> acceptpending = friendlistDAO.getAcceptPendingList(user.getUserid());
+		System.out.println("Accept Pending: " + acceptpending.size());
+		for(Iterator<Long> it = acceptpending.iterator(); it.hasNext();)
+		{
+			Long tmpuserid = it.next();
+			System.out.println(tmpuserid);
+		}
+		
+		// get request pending for this user for friend requests initatied by other users.
+		List<Long> requestpending = friendlistDAO.getFriendRequestPendingList(user.getUserid());
+		System.out.println("Request Pending: " + requestpending.size());
+		
+		for(Iterator<Long> it = requestpending.iterator(); it.hasNext();)
+		{
+			Long tmpuserid = it.next();
+			System.out.println(tmpuserid);
+		}
+		
+		
+		for(Iterator<User_Detail> it = allusers.iterator(); it.hasNext();)
+		{
+			User_Detail currusr = it.next();
+			if(currusr.getEmail().equals(user.getEmail()))
+			{
+				// remove the user that has sent the request.
+				it.remove();
+			}
+			else
+			{
+				// if this user is a frined of the "user" passed in the param then mark it as "Is a friend"
+				// else as "Add as a friend".
+				Long val = (Long) Long.valueOf(currusr.getUserid());
+				if(allfriends.indexOf(val) == -1 )
+				{
+					currusr.setAddress("Add as friend");
+				}
+				else
+				{
+					currusr.setAddress("Is a friend");
+				}
+				
+
+				// if currusr is added as a friend by the user (param) then show that currusr as 
+				// "Added (Accept Pending)"
+				if(acceptpending.indexOf(val) != -1)
+				{
+					currusr.setAddress("Added (Accept Pending)");
+				}
+				
+				if(requestpending.indexOf(val) != -1)
+				{
+					currusr.setAddress("ACCEPT FRIEND REQUEST");
+				}
+			}
+		}
+		return new ResponseEntity<List<User_Detail>>(allusers, HttpStatus.OK);
 	}	
+	
 	
 	@PostMapping("/receive")
 	public ResponseEntity<DomainResponse> post_userlogin(@RequestBody User_Detail user) {
@@ -50,7 +124,7 @@ public class UserController {
 		
 		if( duplicateUser == null)
 		{
-			int nextId = userDAO.getLastIndertedID() + 1;
+			int nextId = userDAO.getLastInsertedID() + 1;
 			user.setUserid(nextId);
 			user.setAuthenticated(false);
 			userDAO.add(user);

@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @Configuration
-//@EnableWebMvc // comment while running test cases
+@EnableWebMvc // comment while running test cases
 @ComponentScan("com.niitbejai.onlinecollaboration")
 public class MvcConfig extends WebMvcConfigurerAdapter {
 

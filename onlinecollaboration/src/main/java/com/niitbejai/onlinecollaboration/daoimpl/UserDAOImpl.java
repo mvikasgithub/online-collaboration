@@ -119,9 +119,9 @@ public class UserDAOImpl implements UserDAO
 	}
 
 	@Override
-	public int getLastIndertedID() {
+	public int getLastInsertedID() {
 		BigDecimal lastBIseqid = (BigDecimal) sessionFactory.getCurrentSession().createSQLQuery("select USER_DETAIL_USERID_SEQ.nextval from dual").uniqueResult();
-		System.out.println("NextVal = " + lastBIseqid.toString());
+		System.out.println("User_Detail NextVal = " + lastBIseqid.toString());
 		Integer lastId = lastBIseqid.intValue();
 		return lastId.intValue();
 	}

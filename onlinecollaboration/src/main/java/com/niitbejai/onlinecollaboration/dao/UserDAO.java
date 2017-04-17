@@ -14,5 +14,5 @@ public interface UserDAO
 	String add(User_Detail user);
 	String update(User_Detail user);
 	boolean delete(int id);	
-	int getLastIndertedID();
+	int getLastInsertedID();
 }
