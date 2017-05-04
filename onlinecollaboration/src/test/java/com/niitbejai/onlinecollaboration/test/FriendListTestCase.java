@@ -32,10 +32,10 @@ public class FriendListTestCase {
 //	}
 	
 	
-	@Test
-	public void testUpdateFriendStatus()
-	{
-		assertEquals("Successfully updated Friend !", true, friendListDAO.updateFriendStatus(2, 3, "ACCEPTED"));
-	}
+//	@Test
+//	public void testUpdateFriendStatus()
+//	{
+//		assertEquals("Successfully updated Friend !", true, friendListDAO.updateFriendStatus(2, 3, "ACCEPTED"));
+//	}
 	
 }

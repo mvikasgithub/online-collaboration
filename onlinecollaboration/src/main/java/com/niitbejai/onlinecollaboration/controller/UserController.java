@@ -138,12 +138,31 @@ public class UserController {
 		}
 	}
 	
+	@RequestMapping(value = "/allawaitingauth")
+	public ResponseEntity<List<User_Detail>> getllAllUsersAwaitingAuth() 
+	{
+		System.out.println("Inside /user/allawaitingauth");
+		return new ResponseEntity<List<User_Detail>>(userDAO.allUsersAwaitingAuth(), HttpStatus.OK);
+	}
+	
+	@PostMapping("/authenticate")
+	public ResponseEntity<User_Detail> authenticateuser(@RequestBody User_Detail user) 
+	{
+		
+		System.out.println("Authenticate user: " + user);
+		user.setAuthenticated(true);
+		userDAO.update(user);
+		
+		return new ResponseEntity<User_Detail> (user, HttpStatus.OK);
+	}	
+	
 	@PostMapping("/login")
 	public ResponseEntity<User_Detail> post(@RequestBody User_Detail user) {
 		
 		System.out.println(user);
 		
 		User_Detail existingUser = userDAO.getUserByEmail(user.getEmail());
+
 		
 		System.out.println("Existing user = " + existingUser);
 		

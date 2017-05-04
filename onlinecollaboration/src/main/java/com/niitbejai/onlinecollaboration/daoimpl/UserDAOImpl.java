@@ -1,14 +1,16 @@
 package com.niitbejai.onlinecollaboration.daoimpl;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.hibernate.type.StandardBasicTypes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
 
 import com.niitbejai.onlinecollaboration.dao.UserDAO;
 import com.niitbejai.onlinecollaboration.dto.User_Detail;
@@ -124,6 +126,32 @@ public class UserDAOImpl implements UserDAO
 		System.out.println("User_Detail NextVal = " + lastBIseqid.toString());
 		Integer lastId = lastBIseqid.intValue();
 		return lastId.intValue();
+	}
+	
+	@Override
+	public List<Long> usersAwaitingAuth() 
+	{
+		int awaitingAuthentication = 0;
+		String selectFriendId = "SELECT userid FROM User_detail WHERE authenticated= :authd";
+		Query query = sessionFactory.getCurrentSession().createNativeQuery(selectFriendId).addScalar("userid", StandardBasicTypes.LONG);
+		query.setParameter("authd", awaitingAuthentication);
+		
+		return query.getResultList();	
+	}	
+
+	@Override
+	public List<User_Detail> allUsersAwaitingAuth() 
+	{
+		List<Long> authAwaitingUserIds = usersAwaitingAuth();
+		List<User_Detail> users = new ArrayList<User_Detail>();
+		
+		for(Iterator<Long> it = authAwaitingUserIds.iterator(); it.hasNext(); )
+		{
+			int id = it.next().intValue();
+			users.add(get(id));
+		}
+		
+		return users;
 	}
 
 }

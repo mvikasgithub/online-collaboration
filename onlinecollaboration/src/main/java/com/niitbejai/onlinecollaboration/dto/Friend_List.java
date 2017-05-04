@@ -17,7 +17,7 @@ public class Friend_List implements Serializable
 	 */
 	private static final long serialVersionUID = -2044823641396302924L;
 	@Id
-	private int friendlistid;
+	private int friendlistid; // using sequence FRIEND_LIST_ID_SEQ
 
 	private int userid;
 	private int friendid;
