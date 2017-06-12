@@ -79,6 +79,12 @@ public class UserController {
 				// remove the user that has sent the request.
 				it.remove();
 			}
+			if(currusr.isAuthenticated() == false)
+			{
+				// remove the who has not been authenticated.
+				it.remove();
+				
+			}
 			else
 			{
 				// if this user is a frined of the "user" passed in the param then mark it as "Is a friend"
